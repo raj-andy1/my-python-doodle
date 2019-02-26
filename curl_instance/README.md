@@ -5,4 +5,5 @@ essentially I created this program to measure the time it took for me from the p
 
 # Usage
 `python3 curl_jira.py <url>`
-## example `python3 curl_jira.py http://ar-jira-dc-01.teamsin.space`
+_*example*_
+`python3 curl_jira.py http://ar-jira-dc-01.teamsin.space`
