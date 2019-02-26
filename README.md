@@ -1,2 +1,2 @@
 # my-python-doodle
-my-python-doodling
+This repository contains some of my personal projects which I have created for my own learning and other purposes.
