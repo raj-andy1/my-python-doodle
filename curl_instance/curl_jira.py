@@ -21,8 +21,9 @@ except IndexError:
 	log_path = '/var/log/'
 	
 
-logging.basicConfig(level=logging.DEBUG, format=' %(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.CRITICAL, format=' %(asctime)s - %(levelname)s - %(message)s')
 log = logging.getLogger(__name__)
+
 
 def keyboardInterruptHandler(signal,frame):
 	log.debug('Received keyboard interrupt, Exiting')
@@ -44,8 +45,8 @@ if validators.url(url):
 		try:
 			r = requests.get(url)
 		except requests.exceptions.RequestException as e:
-			print ('#', end='')
-			log.debug('Connection Error' + '***' + 'Status code for provided URL:' + url + 'is: ' + str(r.status_code))
+			print('Connection Error' + '***' + time.strftime("%H:%M:%S", time.gmtime(time.time())))
+			log.debug(e)
 			time.sleep(10)
 		else:
 			log.debug('Status code for provided URL:' + url + 'is: ' + str(r.status_code))
@@ -53,7 +54,7 @@ if validators.url(url):
 				print ('***Instance is up***')
 				elapsed_time = time.time() - start_time
 				print ('Total time for the instance to come up(hh:mm:ss):', time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
-				log.debug('Program has ended time for URL-' + url + '***' + time.strftime("%H:%M:%S", time.gmtime(start_time)))
+				log.debug('Program has ended time for URL-' + url + '***' + time.strftime("%H:%M:%S", time.gmtime(elapsed_time)))
 				exit()
 else:
 	print ('URL Validation Failed for: ' + url + '. Please check URL and try again')
