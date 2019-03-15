@@ -3,6 +3,7 @@
 import boto3
 import random
 
+#Parameters
 num_users = 200 #provide the number of users
 user_list = []
 group_nm = 'og' #provide name of the group
@@ -23,19 +24,19 @@ print ('List of users to be added is ', user_list)
 
 iam = boto3.client('iam')
 
+
 while True:
-	while True:
-		response = input('Press "P" to proceed or "C" to cancel:')
-		if response == '' or response == 'C' or response == 'c':
-			print ('Cancelling!!')
-			break
-		elif response == 'P' or response == 'p':
-			print ('Creating users')
-			for user_nm in user_list:
-				user = iam.create_user(UserName=user_nm)
-				group = iam.add_user_to_group(GroupName=group_nm,UserName=user_nm)
-				iam.create_login_profile(UserName=user_nm,Password=passwd,PasswordResetRequired=False)
-				print ('Created User: %s' % user['User']['UserName'])
-				if group['ResponseMetadata']['HTTPStatusCode'] == 200:
-					print ('User: %s has been added to group: %s' % (user['User']['UserName'],group_nm))
-			exit()
+	response = input('Press "P" to proceed or "C" to cancel:')
+	if response == '' or response == 'C' or response == 'c':
+		print ('Cancelling!!')
+		break
+	elif response == 'P' or response == 'p':
+		print ('Creating users')
+		for user_nm in user_list:
+			user = iam.create_user(UserName=user_nm)
+			group = iam.add_user_to_group(GroupName=group_nm,UserName=user_nm)
+			iam.create_login_profile(UserName=user_nm,Password=passwd,PasswordResetRequired=False)
+			print ('Created User: %s' % user['User']['UserName'])
+			if group['ResponseMetadata']['HTTPStatusCode'] == 200:
+				print ('User: %s has been added to group: %s' % (user['User']['UserName'],group_nm))
+		exit()
