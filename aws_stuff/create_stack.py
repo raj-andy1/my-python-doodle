@@ -74,6 +74,7 @@ for stack in stack_list:
     	{'Key': 'resource_owner','Value': 'csa_team'},
     	{'Key': 'service_name','Value': 'summit19 test'},
     	{'Key': 'business_unit','Value': 'FieldOps'},
+    	{'Key':'Name','Value':stack}
     	],
     	ClientRequestToken=str(random.randrange(10,1000,3)),
     	EnableTerminationProtection=False
