@@ -3,12 +3,34 @@
 import boto3
 import random
 import json
+import time
 
-num_instances = 0
+#program parameters
+num_instances = 10
 instance_list=[]
 user_str = 'jsd'
 domain_nm = '.og.summit19labs.com'
-salt_flag = True #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
+salt_flag = False #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
+
+#boto3 parameters
+region_nm = 'us-west-2'
+
+#instance parameters
+dry_run = False #whether to do a dry run to validate parameters
+key_nm = 'atl-master-us-west-2' #SSH Key Name, key needs to be uploaded first
+iam_arn= 'arn:aws:iam::729545084641:instance-profile/ec2_ssm_role_for_og' #arn for the instance profile to be attached to the instance during creation
+iam_nm= 'ec2_ssm_role_for_og' #name of the instance profile arn specified above
+if_del_on_term = True #Wheter the resource should be deleted when the instance is deleted
+if_enc = False #if encryption required
+if_public_ip = True #Whether public IP should be assigned
+img_id = 'ami-07e20dadcb584afe0' #ami id of the image to be deployed
+inst_type = 'm4.xlarge'  #instance type
+sec_g = ['sg-0f9dc38a01de01cb9'] #security group list
+snet_id = 'subnet-0f463f0d9bb2d4b94' #subnet Id
+vol_sz = 100 #size of volume
+vol_type = 'gp2' #type of volume
+
+
 
 for num in range(0,(num_instances+1)):
 	if salt_flag: # if flag is present, add the salt to the instance name string
@@ -21,7 +43,7 @@ for num in range(0,(num_instances+1)):
 
 print('List of instances:', instance_list)
 
-ec2 = boto3.resource('ec2',region_name='us-west-2')
+ec2 = boto3.resource('ec2',region_name=region_nm)
 
 while True:
 	response = input('Press "P" to proceed or "C" to cancel:')
@@ -32,28 +54,32 @@ while True:
 		print ('Creating Instances')
 		for inst_nm in instance_list:
 			instance = ec2.create_instances(
-				DryRun=False,
-				ImageId = 'ami-01e24be29428c15b2',
+				DryRun=dry_run,
+				ImageId = img_id,
 				MinCount =1,
 				MaxCount = 1,
-				InstanceType = 't2.small',
-				KeyName = 'atl-master-us-west-2',
+				InstanceType = inst_type,
+				KeyName = key_nm,
+				IamInstanceProfile={
+					'Arn':iam_arn,
+					'Name': iam_nm,
+				},
 				NetworkInterfaces=[
 				{
 					'DeviceIndex':0,
-					'AssociatePublicIpAddress':True,
-					'DeleteOnTermination':True,
-					'SubnetId':'subnet-0f463f0d9bb2d4b94',
-					'Groups':['sg-0f9dc38a01de01cb9'],
+					'AssociatePublicIpAddress': if_public_ip,
+					'DeleteOnTermination': if_del_on_term,
+					'SubnetId':snet_id,
+					'Groups': sec_g,
 				}],
 				BlockDeviceMappings=[
 				{ 
 				'DeviceName':'/dev/xvda',
 				'Ebs': {
-					'DeleteOnTermination':True,
-					'VolumeSize': 10,
-					'VolumeType':'gp2',
-					'Encrypted': False,
+					'DeleteOnTermination':if_del_on_term,
+					'VolumeSize': vol_sz,
+					'VolumeType':vol_type,
+					'Encrypted': if_enc,
 				},
 				}],
 				TagSpecifications=[
@@ -66,13 +92,14 @@ while True:
                 },]},],
 				)
 			#print (instance)
-			print (instance[0].instance_id)
-			inst = boto3.client('ec2',region_name='us-west-2')
+			print ('Created Instance:',instance[0].instance_id)
+			inst = boto3.client('ec2',region_name=region_nm)
+			time.sleep(5)
 			inst_desc = inst.describe_instances(
 				InstanceIds=[instance[0].instance_id,],
 				DryRun = False
 				)
-			print ('Instance Description***')
+			#print ('Instance Description***')
 			#print (inst_desc)
 			inst_pub_ip = inst_desc['Reservations'][0]['Instances'][0]['PublicIpAddress']
 			print ('PublicIpAddress***')
@@ -83,7 +110,7 @@ while True:
 			ChangeBatch={
 			'Changes': [
 			{
-                'Action': 'CREATE',
+                'Action': 'UPSERT',
                 'ResourceRecordSet': {
                     'Name': inst_nm,
                     'Type': 'A',
@@ -94,7 +121,10 @@ while True:
                         },
                     ],}},]})
 			print ('R53 Update status')
-			print (rrupdate)
-			exit()
+			#print (rrupdate)
+			if rrupdate['ResponseMetadata']['HTTPStatusCode'] == 200:
+				print ('Added instance %s with public ip %s to Route53 and status is %s' %(inst_nm, inst_pub_ip,rrupdate['ChangeInfo']['Status']))
+			time.sleep(5)
+		exit()
 
 		
