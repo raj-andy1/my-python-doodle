@@ -6,25 +6,24 @@ import json
 import time
 
 #program parameters
-num_instances = 10
+num_instances = 2
 instance_list=[]
 user_str = 'jsd'
-domain_nm = '.og.summit19labs.com'
+domain_nm = 'og.summit19labs.com.'
 salt_flag = False #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
 
 #boto3 parameters
 region_nm = 'us-west-2'
 
-#instance parameters
+#ec2 instance parameters
 dry_run = False #whether to do a dry run to validate parameters
-key_nm = 'atl-master-us-west-2' #SSH Key Name, key needs to be uploaded first
 iam_arn= 'arn:aws:iam::729545084641:instance-profile/ec2_ssm_role_for_og' #arn for the instance profile to be attached to the instance during creation
-iam_nm= 'ec2_ssm_role_for_og' #name of the instance profile arn specified above
 if_del_on_term = True #Wheter the resource should be deleted when the instance is deleted
 if_enc = False #if encryption required
 if_public_ip = True #Whether public IP should be assigned
-img_id = 'ami-07e20dadcb584afe0' #ami id of the image to be deployed
+img_id = 'ami-05e16724e6a899c2b' #ami id of the image to be deployed
 inst_type = 'm4.xlarge'  #instance type
+key_nm = 'atl-master-us-west-2' #SSH Key Name, key needs to be uploaded first
 sec_g = ['sg-0f9dc38a01de01cb9'] #security group list
 snet_id = 'subnet-0f463f0d9bb2d4b94' #subnet Id
 vol_sz = 100 #size of volume
@@ -38,7 +37,7 @@ for num in range(0,(num_instances+1)):
 		instance_name = user_str  + '-' + str(salt) +'-'
 	else:
 		instance_name = user_str + '-'
-	instance_name = instance_name + str(num).zfill(3) + domain_nm
+	instance_name = instance_name + str(num).zfill(3) + '.' +domain_nm
 	instance_list.append(instance_name)
 
 print('List of instances:', instance_list)
@@ -62,7 +61,6 @@ while True:
 				KeyName = key_nm,
 				IamInstanceProfile={
 					'Arn':iam_arn,
-					'Name': iam_nm,
 				},
 				NetworkInterfaces=[
 				{
@@ -96,8 +94,8 @@ while True:
 			inst = boto3.client('ec2',region_name=region_nm)
 			time.sleep(5)
 			inst_desc = inst.describe_instances(
+				DryRun = dry_run,
 				InstanceIds=[instance[0].instance_id,],
-				DryRun = False
 				)
 			#print ('Instance Description***')
 			#print (inst_desc)
@@ -105,8 +103,12 @@ while True:
 			print ('PublicIpAddress***')
 			print (inst_pub_ip)
 			dns = boto3.client('route53')
+			gethz = dns.list_hosted_zones_by_name(
+				DNSName = domain_nm,
+				)
+			#print (gethz)
 			rrupdate = dns.change_resource_record_sets(
-			HostedZoneId='Z3MYWP3Y9LDS3A',
+			HostedZoneId=gethz['HostedZones'][0]['Id'][12:],
 			ChangeBatch={
 			'Changes': [
 			{
