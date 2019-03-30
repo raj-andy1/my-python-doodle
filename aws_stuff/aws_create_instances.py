@@ -6,7 +6,7 @@ import json
 import time
 
 #program parameters
-num_instances = 2
+num_instances = 3
 instance_list=[]
 user_str = 'jsd'
 domain_nm = 'og.summit19labs.com.'
@@ -37,7 +37,7 @@ for num in range(0,(num_instances+1)):
 		instance_name = user_str  + '-' + str(salt) +'-'
 	else:
 		instance_name = user_str + '-'
-	instance_name = instance_name + str(num).zfill(3) + '.' +domain_nm
+	instance_name = instance_name + str(num).zfill(3) + '.' + domain_nm
 	instance_list.append(instance_name)
 
 print('List of instances:', instance_list)
