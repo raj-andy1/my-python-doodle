@@ -6,11 +6,11 @@ import json
 import time
 
 #program parameters
-num_instances = 2
+num_instances = 1
 instance_list=[]
 user_str = 'jsd'
-domain_nm = 'og.summit19labs.com.'
-salt_flag = False #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
+domain_nm = 'og.summit19labs.com'
+salt_flag = True #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
 
 #boto3 parameters
 region_nm = 'us-west-2'
@@ -21,8 +21,8 @@ iam_arn= 'arn:aws:iam::729545084641:instance-profile/ec2_ssm_role_for_og' #arn f
 if_del_on_term = True #Wheter the resource should be deleted when the instance is deleted
 if_enc = False #if encryption required
 if_public_ip = True #Whether public IP should be assigned
-img_id = 'ami-05e16724e6a899c2b' #ami id of the image to be deployed
-inst_type = 'm4.xlarge'  #instance type
+img_id = 'ami-0077910e4c35b2a3c' #ami id of the image to be deployed
+inst_type = 'm4.large'  #instance type
 key_nm = 'atl-master-us-west-2' #SSH Key Name, key needs to be uploaded first
 sec_g = ['sg-0f9dc38a01de01cb9'] #security group list
 snet_id = 'subnet-0f463f0d9bb2d4b94' #subnet Id
@@ -37,7 +37,7 @@ for num in range(0,(num_instances+1)):
 		instance_name = user_str  + '-' + str(salt) +'-'
 	else:
 		instance_name = user_str + '-'
-	instance_name = instance_name + str(num).zfill(3) + '.' +domain_nm
+	instance_name = instance_name + str(num).zfill(3) + '.' + domain_nm
 	instance_list.append(instance_name)
 
 print('List of instances:', instance_list)
