@@ -13,8 +13,8 @@ region_nm = 'us-west-2'
 #CF params
 domain_nm = 'j8.summit19labs.com.'
 s3_url = 'https://s3-us-west-2.amazonaws.com/summit19-labs/j8/templates/j8-jira-dc.yaml'
-j_ver = '8.0.2'
-j_prod = 'All'
+j_ver = '8.1.0'
+j_prod = 'Software'
 
 for num in range(0,(num_stack+1)):
 	if salt_flag: # if flag is present, add the salt to the instance name string
