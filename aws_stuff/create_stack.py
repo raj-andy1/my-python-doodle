@@ -3,27 +3,29 @@ import boto3
 import random
 
 stack_list = []
-num_stack = 1
-user_str = 'j8'
-salt_flag = True
+num_stack = 50
+user_str = 'bak-dc'
+salt_flag = False
+start_num = 0
 
 #boto params
 region_nm = 'us-west-2'
 
 #CF params
-domain_nm = 'j8.summit19labs.com.'
-s3_url = 'https://s3-us-west-2.amazonaws.com/summit19-labs/j8/templates/j8-jira-dc.yaml'
+domain_nm = 'dc.summit19labs.com.'
+s3_url = 'https://s3-us-west-2.amazonaws.com/summit19-labs/dc/templates/dc-jira-dc.yaml'
 j_ver = '8.1.0'
 j_prod = 'Software'
+j_dl_url = 'https://www.atlassian.com/software/jira/downloads/binary/atlassian-jira-software-8.1.0-EAP02-x64.bin'
 
-for num in range(0,(num_stack+1)):
+for num in range(start_num,(num_stack+1)):
 	if salt_flag: # if flag is present, add the salt to the instance name string
 		salt = random.randrange(10,500,3)
-		instance_name = user_str  + '-' + str(salt) + '-'
+		stack_name = user_str  + '-' + str(salt) + '-'
 	else:
-		instance_name = user_str + '-'
-	instance_name = instance_name + str(num).zfill(3)
-	stack_list.append(instance_name)
+		stack_name = user_str + '-'
+	stack_name = stack_name + str(num).zfill(3)
+	stack_list.append(stack_name)
 
 print ('List of stacks to be created:',stack_list)
 
@@ -45,9 +47,9 @@ while True:
 				{'ParameterKey':'JiraProduct','ParameterValue':j_prod,'UsePreviousValue':False},
 				{'ParameterKey':'JiraVersion','ParameterValue':j_ver,'UsePreviousValue':False},
 				{'ParameterKey':'DeployEnvironment','ParameterValue':'prod','UsePreviousValue':False},
-				{'ParameterKey':'ClusterNodeInstanceType','ParameterValue':'t3.medium','UsePreviousValue':False},
-				{'ParameterKey':'ClusterNodeMax','ParameterValue':'1','UsePreviousValue':False},
-				{'ParameterKey':'ClusterNodeMin','ParameterValue':'1','UsePreviousValue':False},
+				{'ParameterKey':'ClusterNodeInstanceType','ParameterValue':'t3.large','UsePreviousValue':False},
+				{'ParameterKey':'ClusterNodeMax','ParameterValue':'2','UsePreviousValue':False},
+				{'ParameterKey':'ClusterNodeMin','ParameterValue':'2','UsePreviousValue':False},
 				{'ParameterKey':'ClusterNodeVolumeSize','ParameterValue':'50','UsePreviousValue':False},
 				{'ParameterKey':'DBInstanceClass','ParameterValue':'db.t2.medium','UsePreviousValue':False},
 				{'ParameterKey':'DBIops','ParameterValue':'1000','UsePreviousValue':False},
@@ -63,7 +65,7 @@ while True:
 				{'ParameterKey':'SSLCertificateARN','ParameterValue':'','UsePreviousValue':False},
 				{'ParameterKey':'CustomDnsName','ParameterValue':'','UsePreviousValue':False},
 				{'ParameterKey':'HostedZone','ParameterValue':domain_nm,'UsePreviousValue':False},
-				{'ParameterKey':'JiraDownloadUrl','ParameterValue':'','UsePreviousValue':False},
+				{'ParameterKey':'JiraDownloadUrl','ParameterValue':j_dl_url,'UsePreviousValue':False},
 				{'ParameterKey':'LocalAnsibleGitRepo','ParameterValue':'','UsePreviousValue':False},
 				{'ParameterKey':'LocalAnsibleGitSshKeyName','ParameterValue':'','UsePreviousValue':False},
 				{'ParameterKey':'StartCollectd','ParameterValue':'true','UsePreviousValue':False},
@@ -96,7 +98,7 @@ while True:
     		 	Capabilities=['CAPABILITY_IAM',],
     			Tags=[
     			{'Key': 'resource_owner','Value': 'csa_team'},
-    			{'Key': 'Purpose','Value': 'j8_lab'},
+    			{'Key': 'Purpose','Value': 'dc_training_expo'},
     			{'Key': 'business_unit','Value': 'FieldOps'},
     			{'Key':'Name','Value':stack},
     			],

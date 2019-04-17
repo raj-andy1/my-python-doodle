@@ -6,11 +6,12 @@ import json
 import time
 
 #program parameters
-num_instances = 1
+num_instances = 200
 instance_list=[]
 user_str = 'jsd'
 domain_nm = 'og.summit19labs.com'
-salt_flag = True #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
+salt_flag = False #Flag set to add a random number to instance name string to counter for AWS instance delete time lag
+start_num = 0
 
 #boto3 parameters
 region_nm = 'us-west-2'
@@ -22,7 +23,7 @@ if_del_on_term = True #Wheter the resource should be deleted when the instance i
 if_enc = False #if encryption required
 if_public_ip = True #Whether public IP should be assigned
 img_id = 'ami-0077910e4c35b2a3c' #ami id of the image to be deployed
-inst_type = 'm4.large'  #instance type
+inst_type = 'm5.large'  #instance type
 key_nm = 'atl-master-us-west-2' #SSH Key Name, key needs to be uploaded first
 sec_g = ['sg-0f9dc38a01de01cb9'] #security group list
 snet_id = 'subnet-0f463f0d9bb2d4b94' #subnet Id
@@ -31,7 +32,7 @@ vol_type = 'gp2' #type of volume
 
 
 
-for num in range(0,(num_instances+1)):
+for num in range(start_num,(num_instances+1)):
 	if salt_flag: # if flag is present, add the salt to the instance name string
 		salt = random.randrange(10,500,3)
 		instance_name = user_str  + '-' + str(salt) +'-'
