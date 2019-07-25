@@ -6,10 +6,11 @@ import random
 #Parameters
 num_users = 200 #provide the number of users
 user_list = [] #Empty user list that gets populated
-group_nm = 'og' #provide name of the group
+group_nm = '' #provide name of the group
 passwd='AtlassianSummit19L@b' #provide the password
-org_id = 'm-9a7a0126ccbe4e4887821708dd45b934' #workmail organization ID
-domain_nm = 'og.summit19labs.com'
+org_id = 'm-a613fdca685e4efdb6e748d916992864' #workmail organization ID
+domain_nm = 'atlassian.guru'
+region_nm = 'us-east-1'
 salt_flag = False # Flag to set a random salt number to be added to the user name string to counter for aws delete user time lags
 
 
@@ -18,13 +19,13 @@ for num in range(1,(num_users+1)):
 		salt = random.randrange(10,500,3)
 		user_name = group_nm  + '-' + str(salt) + '-user-'
 	else:
-		user_name = group_nm +'-user-'
+		user_name = group_nm +'user-'
 	user_name = user_name + str(num).zfill(3)
 	user_list.append(user_name)
 
 print ('List of users to be added is ', user_list)
 
-iam = boto3.client('workmail',region_name='us-west-2') #provide region name since cloudtoken needs defaults to us-east-1
+iam = boto3.client('workmail',region_name=region_nm) #provide region name since cloudtoken needs defaults to us-east-1
 
 while True:
 	response = input('Press "P" to proceed or "C" to cancel:')

@@ -1,10 +1,14 @@
 #python script to request http page and get response code
 import requests
 import time
+import datetime
 import sys
 import signal
 import logging
 import validators
+import boto3
+from urllib.parse import urlparse,urlsplit
+
 
 
 try:
@@ -42,6 +46,14 @@ print ('Program Start time for URL-' + url + '***' + time.strftime("%H:%M:%S", t
 #log.debug (validators.url(url))
 
 if validators.url(url):
+	stacknm = urlparse(url).hostname
+	stacknm = stacknm[:stacknm.find('.')]
+	#print (stacknm)
+	client = boto3.client('cloudformation')
+	response = client.describe_stack_events(
+		StackName = stacknm)
+	stack_creation_time = response['StackEvents'][0]['Timestamp'] - response['StackEvents'][-1]['Timestamp']
+	print (stack_creation_time)
 	while True:
 		try:
 			r = requests.get(url)
@@ -52,7 +64,7 @@ if validators.url(url):
 			time.sleep(10)
 		else:
 			#log.debug('Status code for provided URL:' + url + 'is: ' + str(r.status_code))
-			print ('Status code for provided URL:' + url + 'is: ' + str(r.status_code))
+			print ('Status code for provided URL:' + url + ' is: ' + str(r.status_code))
 			if (r.status_code == requests.codes.ok):
 				print ('***Instance is up***')
 				elapsed_time = time.time() - start_time
