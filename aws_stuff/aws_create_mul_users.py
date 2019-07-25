@@ -5,7 +5,7 @@ import random
 
 num_users = 3 #provide the number of users
 group_nm = {'j8dcd','opg','dc','j8'} #provide name of the group
-user_list = dict.fromkeys(group_nm,[])
+user_list = dict.fromkeys(group_nm)
 #print (user_list)
 passwd='' #provide the password
 salt_flag = False # Flag to set a random salt number to be added to the user name string to counter for aws delete user time lags
@@ -13,6 +13,7 @@ salt_flag = False # Flag to set a random salt number to be added to the user nam
 # if flag is present, add the salt to the username string, else do not add
 
 for group in group_nm:
+	user_list[group] = []
 	for num in range(1,(num_users+1)):
 		if salt_flag:
 			salt = random.randrange(10,500,3)
