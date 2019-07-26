@@ -75,6 +75,3 @@ else:
 	print ('URL Validation Failed for: ' + url + '. Please check URL and try again')
 	print (validators.url(url))
 	#log.debug(validators.url(url))
-
-
-
