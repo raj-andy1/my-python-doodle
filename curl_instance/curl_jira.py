@@ -42,18 +42,18 @@ def get_stack_name():
 	return stacknm
 
 def get_stack_creation_time(stackname):
-	client = boto3.client('cloudformation')
+	client = boto3.client('cloudformation', region_name=sys.argv[2])
 	stacknm = get_stack_name()
 
 
 signal.signal(signal.SIGINT, keyboardInterruptHandler)
 
 
-client = boto3.client('cloudformation')
+client = boto3.client('cloudformation', region_name=sys.argv[2])
 url = is_url_present()
 stacknm = get_stack_name()
 count = 0
-serviceFlag = False
+serviceFlag = True
 
 while True:
 	try:
@@ -83,7 +83,7 @@ while True:
 		exit(0)
 #print (serviceFlag)
 
-while serviceFlag == True:
+while serviceFlag:
 	print ('Trying to connect to the service url:', url)
 	start_time = datetime.datetime.now().replace(microsecond=0)
 	while count < 100:
