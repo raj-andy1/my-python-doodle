@@ -14,11 +14,11 @@ for k,v in vendor_nm.items():
     vendor_name = k
     print ('Vendor Name:' ,vendor_name)
     vendor_id = v[0]
-    base_url = 'https://marketplace.atlassian.com/rest/2/addons/vendor/'
-    url = ''.join([base_url,vendor_id])
-    url = '?'.join([url,'hosting=datacenter'])
+    base_url = 'https://marketplace.atlassian.com/rest/2/addons'
+    r_url = ''.join([base_url,'/','vendor','/',vendor_id])
+    r_url = '?'.join([r_url,'hosting=datacenter'])
     #print (url)
-    r = requests.get(url)
+    r = requests.get(r_url)
     r_json = json.loads(r.text)
     #print (r_json)
     #print ('Count:' ,r_json['count'])
@@ -27,7 +27,33 @@ for k,v in vendor_nm.items():
         for n in range(0, len(r_json['_embedded']['addons'])):
             app_list = []
             #print (r_json['_embedded']['addons'][n]['name'])
-            app_list.extend((r_json['_embedded']['addons'][n]['key'],vendor_name))
+            app_key = r_json['_embedded']['addons'][n]['key']
+            d_url = ''.join([base_url,'/',app_key,'/','distribution'])
+            print (d_url)
+            d = requests.get(d_url)
+            d_json = json.loads(d.text)
+            if 'downloads' in d_json:
+                num_dl = d_json['downloads']
+            else: num_dl = 0
+            if 'totalInstalls' in d_json:
+                num_total_installs = d_json['totalInstalls']
+            else: num_total_installs = 0
+            if 'totalUsers' in d_json:
+                num_users = d_json['totalUsers']
+            else: num_users = 0
+            p_url = ''.join([base_url,'/',app_key,'/','pricing','/','datacenter','/','live'])
+            #print (p_url)
+            p = requests.get(p_url)
+            #print (p.status_code)
+            #print (type (p.status_code))
+            #print (p_json)
+            if p.status_code == 404:
+                p_type = 'Free or Unknown'
+                #print (p_type)
+            else: 
+                p_json = json.loads(p.text)
+                p_type = p_json['items'][0]['licenseType']
+            app_list.extend((r_json['_embedded']['addons'][n]['key'],vendor_name,num_dl,num_total_installs,num_users,p_type))
             app_new_dict[r_json['_embedded']['addons'][n]['name']] = app_list
             #app_list.append(r_json['_embedded']['addons'][n]['key'])
             #vendor_new_dict[vendor_name] = app_list     
@@ -35,12 +61,10 @@ for k,v in vendor_nm.items():
         print ('No DC Apps')
         no_dc_apps_list.append(vendor_name)
 #print (vendor_new_dict)
-print (app_new_dict)
-print (len(app_new_dict))
+#print (app_new_dict)
+#print (len(app_new_dict))
 
-'''
-for v in vendor_new_dict:
-    alist = vendor_new_dict[v]
-    print ("{}\t{}".format(v,alist))
-    '''
+for a in app_new_dict:
+    alist = app_new_dict[a]
+    print ("{}\t{}".format(a,alist))
 
