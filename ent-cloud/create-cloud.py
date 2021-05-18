@@ -34,11 +34,17 @@ cloudInst = [{
 
 
 for cloud in cloudInst:
-	sleep (rand)
+	#sleep (rand)
 	try:
 		r = requests.post(url,json=cloud,headers=hdrs,cookies=cks)
 		print (r.text)
-		if r.text = 'Rate limit exceeded':
+
+
+
+'''
+			if r.text == 'Rate limit exceeded':
 			un_prov_cloud.append(cloud['cloudName'])
+'''
+
 
 
