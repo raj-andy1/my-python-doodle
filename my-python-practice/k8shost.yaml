@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description:
+Description: "template to provision ec2 instances to install K8s"
 Resources:
   DummyServer:
     Type: "AWS::EC2::Instance"
@@ -7,13 +7,13 @@ Resources:
       ImageId:  "ami-0dd273d94ed0540c0"
       BlockDeviceMappings:
         - DeviceName: "/dev/sdb"
-            Ebs:
-              VolumeType: "gp2"
-              DeleteOnTermination: "false"
-              VolumeSize: "20"
+          Ebs:
+            VolumeType: "gp2"
+            DeleteOnTermination: "false"
+            VolumeSize: "20"
       InstanceType: "t3.medium"
       IamInstanceProfile: "FieldOperationsGovernance"
-      SecurityGroupIds: "sg-040889562f1659c13"
+      SecurityGroupIds: ["sg-040889562f1659c13"]
       Tags:
         -
           Key: "resource_owner"
@@ -41,7 +41,7 @@ echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] 
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io
 
-#Configure the Docker daemon, in particular to use systemd for the management of the container’s cgroups
+#Configure the Docker daemon, in particular to use systemd for the management of the container���s cgroups
 cat <<EOF | sudo tee /etc/docker/daemon.json
 {
   'exec-opts': ['native.cgroupdriver=systemd'],
