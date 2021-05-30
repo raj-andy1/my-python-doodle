@@ -1,5 +1,5 @@
 #russian peasants algorithm
-
+import time
 
 def russian_algo(num1, num2):
 	table = {}
@@ -14,10 +14,17 @@ def russian_algo(num1, num2):
 	return (sum(table.values()))
 	exit(0)
 
-print (russian_algo(24,16))
-print (russian_algo(16,24))
-print (russian_algo(238,13))
-print (russian_algo(357,16))
+def test_russian_algo(num1,num2):
+	start_time = time.time()
+	print (russian_algo(num1,num2))
+	print ('Time it took to run the russian peasants algorithm in seconds: %f' % (time.time() - start_time))
+
+
+
+test_russian_algo(16,24)
+test_russian_algo(238,13)
+test_russian_algo(357,16)
+
 
 
 
