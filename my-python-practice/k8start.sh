@@ -21,9 +21,6 @@ sudo dpkg -i osquery_4.8.0-1.linux_amd64.deb
 #Copy OSQUERY sample config file
 cp /usr/share/osquery/osquery.example.conf /etc/osquery/osquery.conf
 
-#Install jq
-yum install jq -y
-
 #Get secret
 /usr/local/bin/aws secretsmanager get-secret-value --secret-id arn:aws:secretsmanager:us-east-1:531915269918:secret:OsquerySecretForLinux-0Xwaj5 --region us-east-1 | jq --raw-output '.SecretString' | jq -r '.["kolide.enrollment_secret"]' > /etc/osquery/kolide.enrollment_secret
 
