@@ -2,11 +2,11 @@ import json
 import datetime
 import dateutil.parser
 
-xaceFile = 'newAllAce.csv'
+xaceFile = 'newAllAce2.csv'
 with open(xaceFile, 'w') as x:
     x.write('xnId, cloudName, time')
     x.write('\n')
-    with open('/Users/arajagopalan/Downloads/x_ace_history.json', 'r') as f:
+    with open('/Users/arajagopalan/Downloads/x_ace_history_2.json', 'r') as f:
         contents = json.load(f)
         for content in contents:
             # print(content)
