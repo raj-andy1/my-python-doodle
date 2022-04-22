@@ -23,9 +23,15 @@ with open('/Users/arajagopalan/Downloads/PM Interview Churn Data - Sept 21.csv',
         if item[fields.index('User Country')] in ['US', 'CA'] and \
                 item[fields.index('Reason for Migration Request')] not in ['Business Shutting down']:
             #print(item[fields.index('Reason for Migration Request')])
+            item[fields.index('Lifetime Net Processing Volume (NPV)')] = int(
+                float((item[fields.index('Lifetime Net Processing Volume (NPV)')])))
+            item[fields.index('Last 19 months NPV')] = int(
+                float((item[fields.index('Last 19 months NPV')])))
+            item[fields.index('Last Month NPV (Net Processing Volume)')] = int(
+                float((item[fields.index('Last Month NPV (Net Processing Volume)')])))
             if item[fields.index('Reason for Migration Request')] in ['"Lack of Capabilities - Insights (declines']:
                 #print(item[fields.index('Outcome')])
-                item[fields.index('Reason for Migration Request')] = 'Lack of Capabilities - Insights (declines, fraud, etc.)'
+                item[fields.index('Reason for Migration Request')] = 'Lack of Capabilities - Insights (declines fraud etc.)'
                 if item[fields.index('UserID')] == 0.2334319957:
                     item[fields.index('Outcome')] = 'Saved'
                 else: item[fields.index('Outcome')] = 'Churning'
