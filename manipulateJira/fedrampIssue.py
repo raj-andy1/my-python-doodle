@@ -1,4 +1,5 @@
 # sample program to extract values from CSV file
+# https://stackoverflow.com/questions/10588644/how-can-i-see-the-entire-http-request-thats-being-sent-by-my-python-application
 import csv
 import requests
 from requests.auth import HTTPBasicAuth
@@ -43,7 +44,7 @@ def gen_payload(summary: str, desc: str, project: str, reporter: str, issuetype:
     return payload
 
 
-def http_request(httpurl, payload, method='POST', headers=None, **kwargs):
+def http_request(httpurl, payload, httpauth, method='POST', headers=None, **kwargs):
     if headers is None:
         headers = ({
             "Accept": "application/json",
@@ -54,7 +55,8 @@ def http_request(httpurl, payload, method='POST', headers=None, **kwargs):
             method=method,
             url=httpurl,
             data=payload,
-            headers=headers
+            headers=headers,
+            auth=httpauth
         )
         print(response.request.url)
         print(response.request.headers)
@@ -102,7 +104,7 @@ def main():
                             '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira'
                             '/Controls Regrouping - Sheet4.csv'))
     """
-    filename = '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira/Controls Regrouping - Sheet4.csv'
+    filename = '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira/Controls Regrouping - Sheet2.csv'
     load_dotenv()
     with open(filename, 'r', encoding='utf-8') as csvfile:
         lines = csv.reader(csvfile)
@@ -124,32 +126,25 @@ def main():
                                     }
                                   ))
             print(line[1] + ',' + result['key'])
-            
-            # adding a label/updating a field in an existing Jira Issue
-            result = http_request(httpurl=url + '/' + line[3],
+            """
+            # adding a label/updating a field(add epic) in an existing Jira Issue
+            result = http_request(httpurl='https://hello.atlassian.net/rest/api/2/issue/' + line[3],
                                   method='PUT',
-                                  auth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY')),
                                   payload=json.dumps({
                                       "update": {
                                           "labels": [
                                               {
-                                                  "add": "FedRAMP-Moderate"
+                                                  "add": "FedRAMP-Moderate",
+                                                  "add": line[5] if line[5] else '',
                                               }
                                           ]
-                                      }
-                                  }),
-                                  )
-            print(result)
-            """
-            # adding issues to an Epic
-            result = http_request(httpurl='https://hello.atlassian.net/rest/agile/1.0/epic/' + line[4] + '/issue',
-                                  payload=json.dumps({
-                                      "issues": [line[3]]
-                                    }),
-                                  headers={
-                                      "Content-Type": "application/json",
-                                      "Authorization": 'Bearer ' + os.getenv('TOKEN')
-                                  }
+                                      },
+                                      "fields": {
+                                          "parent": {
+                                              "key": line[4],
+                                          }
+                                      }}),
+                                  httpauth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
                                   )
             print(result)
 
