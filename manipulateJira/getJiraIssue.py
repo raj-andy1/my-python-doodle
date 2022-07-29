@@ -3,7 +3,7 @@ from requests.auth import HTTPBasicAuth
 import json
 import os
 
-url = "https://hello.atlassian.net/rest/api/3/issue/FRCP-1"
+url = "https://hello.atlassian.net/rest/api/3/issue/FRCP-71"
 
 auth = HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
 

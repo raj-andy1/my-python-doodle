@@ -134,9 +134,22 @@ def main():
                                       "update": {
                                           "labels": [
                                               {
-                                                  "add": "FedRAMP-Moderate",
+                                                  "add": 'FedRAMP-Moderate',
+
+                                              },
+                                              {
                                                   "add": line[5] if line[5] else '',
-                                              }
+
+                                              },
+                                              {
+                                                  "add": line[7] if line[7] else '',
+
+                                              },
+                                              {
+                                                  "add": line[8] if line[8] else '',
+
+                                              },
+
                                           ]
                                       },
                                       "fields": {
