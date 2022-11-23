@@ -1,21 +1,13 @@
-import requests
 from requests.auth import HTTPBasicAuth
-import json
+from fedrampIssue import http_request
+from dotenv import load_dotenv
 import os
 
-url = "https://hello.atlassian.net/rest/api/3/issue/FRCP-71"
-
-auth = HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
-
-headers = {
-   "Accept": "application/json"
-}
-
-response = requests.request(
-   "GET",
-   url,
-   headers=headers,
-   auth=auth
+url = "https://hello.atlassian.net/rest/api/3/issue/MANTA-196"
+load_dotenv(dotenv_path='envvars.env')
+response = http_request(
+   method="GET",
+   httpurl=url,
+   httpauth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
 )
-print(response.status_code)
-print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
+print(response)

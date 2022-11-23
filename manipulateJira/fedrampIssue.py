@@ -44,12 +44,15 @@ def gen_payload(summary: str, desc: str, project: str, reporter: str, issuetype:
     return payload
 
 
-def http_request(httpurl, payload, httpauth, method='POST', headers=None, **kwargs):
-    if headers is None:
+def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=None, **kwargs):
+    if not headers:
         headers = ({
             "Accept": "application/json",
             "Content-Type": "application/json"
         })
+    if not httpauth:
+        load_dotenv(dotenv_path='envvars.env')
+        httpauth = HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
     try:
         response = requests.request(
             method=method,
