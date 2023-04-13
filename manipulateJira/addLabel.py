@@ -1,26 +1,18 @@
 from fedrampIssue import http_request
 import json
 
-with open('Controls for Rev4_Rev5 FR Mod_FR Low - Sheet2.csv', 'r', encoding='utf-8') as csvfile:
+domain = 'http://fedramp.scalesec.com/'
+with open('FedRAMP controls and projects - Sheet2.csv', 'r', encoding='utf-8') as csvfile:
     lines = csvfile.readlines()
     for line in lines:
         item = line.rstrip("\n")
         # print(item)
         columns = item.split(',')
-        result = http_request(httpurl='https://hello.atlassian.net/rest/api/2/issue/' + columns[5],
-                              method='PUT',
-                              payload=json.dumps({
-                                  "update": {
-                                      "labels": [
-                                          {
-                                              "add": 'rev-4',
+        if '(' in columns[0]:
+            url = domain + 'enhancements/' + '-'.join(
+                [columns[0].split('(')[0].lower().strip(' '), columns[0].split('(')[1].split(')')[0]]) \
+                  + '.html'
 
-                                          },
-                                          {
-                                              "add": columns[7] if columns[7] else '',
-
-                                          },
-                                      ]
-                                  }, })
-                              )
-        print(result)
+        else:
+            url = domain + 'controls/' + columns[0].lower() + '.html'
+        print(url)

@@ -59,11 +59,13 @@ def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=No
             url=httpurl,
             data=payload,
             headers=headers,
-            auth=httpauth
+            auth=httpauth,
+            **kwargs
         )
         print(response.request.url)
         print(response.request.headers)
         print(response.request.body)
+        print(response.status_code)
         if re.match(r'20[0-4]', str(response.status_code)):
             return json.loads(response.text) if response.text else True
         else:
