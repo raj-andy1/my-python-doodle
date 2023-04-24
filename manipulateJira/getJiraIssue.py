@@ -8,7 +8,7 @@ url = "https://hello.atlassian.net/rest/api/3/search"
 load_dotenv(dotenv_path='envvars.env')
 
 query = {
-    "jql": "project = 'MANTA' AND issuetype = 'Control Documentation'"
+    "jql": "project = 'MANTA' AND issuetype = 'Capability Documentation'"
 }
 """
 query = {
