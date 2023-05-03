@@ -34,13 +34,13 @@ for issue in response['issues']:
 
 '''
 with open('fr-tasks.csv', 'w') as file:
-    file.write("{}','{},'{},'{},'{},'{}".format('Documentation Task', 'Document Task Desc', 'Document Task Status',
-                                                'Parent Task', 'Parent Task Desc', 'Parent Task Status'))
+    file.write("{},{},{},{},{},{}".format('Documentation Task', 'Document Task Desc', 'Document Task Status',
+                                          'Parent Task', 'Parent Task Desc', 'Parent Task Status'))
     for issue in response['issues']:
         for subtask in issue['fields']['subtasks']:
             file.write('\n')
-            file.write("{}','{},'{},'{},'{},'{}".format(subtask['key'], subtask['fields']['summary'],
-                                                        subtask['fields']['status']['name'],
-                                                        issue['key'], issue['fields']['summary'],
-                                                        issue['fields']['status']['name']))
+            file.write("{},{},{},{},{},{}".format(subtask['key'], subtask['fields']['summary'],
+                                                  subtask['fields']['status']['name'],
+                                                  issue['key'], issue['fields']['summary'],
+                                                  issue['fields']['status']['name']))
 print(f"Total Tasks {response['total']}")
