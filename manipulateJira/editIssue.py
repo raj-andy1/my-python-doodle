@@ -1,9 +1,6 @@
 import json
-import os
 import csv
-from dotenv import load_dotenv
-from fedrampIssue import http_request, gen_payload
-from requests.auth import HTTPBasicAuth
+from fedrampIssue import http_request
 
 url = 'https://hello.atlassian.net/rest/api/3/issue/'
 
@@ -33,50 +30,56 @@ def gen_desc_url(control):
 
 
 def main():
-    load_dotenv(dotenv_path='envvars.env')
-    print(os.getenv('EMAIL'))
-    with open('FedRAMP controls and projects - Sheet2.csv',
+    with open('Sheet 3-Table 1.csv',
               'r', encoding='utf-8') as csvfile:
         lines = csv.reader(csvfile)
+        headers = next(lines)
         # lines = csvfile.readlines()
         for line in lines:
-            # item = line.rstrip("\n")
-            #  print(line[0])
-            #  print(gen_desc_url(line[0].split(',')[0]))
-            result = http_request(httpurl=url + line[2],
-                                  method='PUT',
-                                  payload=json.dumps({
-                                      "fields": {
-                                          "description": {
-                                              "type": "doc",
-                                              "version": 1,
-                                              "content": [
+            if not line[1]:
+                print(line[4] + ' Not in Rev5')
+                result = http_request(httpurl=url + line[6],
+                                      method='PUT',
+                                      payload=json.dumps({
+                                          "update": {
+                                              "labels": [
                                                   {
-                                                      "type": "paragraph",
-                                                      "content": [
-                                                          {
-                                                              "text": "For more information on this control, refer to: ",
-                                                              "type": "text"
-                                                          },
-                                                          {
-                                                              "type": "text",
-                                                              "text": gen_desc_url(line[0].split(',')[0]),
-                                                              "marks": [{
-                                                                  "type": "link",
-                                                                  "attrs": {
-                                                                      "href": gen_desc_url(line[0].split(',')[0])
-                                                                  }
-                                                              }]
-                                                          }
-                                                      ]
-                                                  }
-                                              ]
+                                                      "add": 'not-in-rev5'
+
+                                                  }]
+                                          }}),
+                                      debug=True)
+            else:
+                result = http_request(httpurl=url + line[6],
+                                      method='PUT',
+                                      payload=json.dumps({
+                                          "update": {
+                                              "labels": [
+                                                  {
+                                                      "add": 'rev5'
+
+                                                  }]
                                           },
-                                      },
-                                  }
-                                  ),
-                                  httpauth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY')))
-            print(result)
+                                          "fields": {
+                                              "description": {
+                                                  "type": "doc",
+                                                  "version": 1,
+                                                  "content": [
+                                                      {
+                                                          "type": "paragraph",
+                                                          "content": [
+                                                              {
+                                                                  "text": line[3],
+                                                                  "type": "text"
+                                                              }
+                                                          ]
+                                                      }
+                                                  ]
+                                              },
+                                          },
+                                      }
+                                      ),
+                                      debug=True)
 
 
 if __name__ == '__main__':
