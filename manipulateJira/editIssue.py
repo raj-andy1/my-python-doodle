@@ -30,7 +30,7 @@ def gen_desc_url(control):
 
 
 def main():
-    with open('Sheet 3-Table 1.csv',
+    with open('Controls for Rev4_Rev5 FR Mod_FR Low - Sheet10.csv',
               'r', encoding='utf-8') as csvfile:
         lines = csv.reader(csvfile)
         headers = next(lines)

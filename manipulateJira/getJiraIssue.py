@@ -1,14 +1,10 @@
-from requests.auth import HTTPBasicAuth
 from fedrampIssue import http_request
-from dotenv import load_dotenv
-import os
 
-# url = "https://hello.atlassian.net/rest/api/3/issue/MANTA-365"
-url = "https://hello.atlassian.net/rest/api/3/search"
-load_dotenv(dotenv_path='envvars.env')
+url = "https://hello.atlassian.net/rest/api/3/issue/MANTA-15"
+#url = "https://hello.atlassian.net/rest/api/3/search"
 
 query = {
-    "jql": "project = 'MANTA' AND issuetype = 'Capability Documentation'"
+    "jql": "project = 'FRCONTROL' AND issuetype = 'Capability Documentation'"
 }
 """
 query = {
@@ -19,10 +15,18 @@ query = {
 response = http_request(
     method="GET",
     httpurl=url,
+    debug=True
+)
+print(response)
+
+
+'''
+response = http_request(
+    method="GET",
+    httpurl=url,
     httpauth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY')),
     params=query,
 )
-'''
 print(f"Total Tasks {response['total']}")
 for issue in response['issues']:
     # print(issue['key'], issue['fields']['summary'])
@@ -32,7 +36,7 @@ for issue in response['issues']:
               f"{subtask['fields']['status']['name']}")
     print(f"Total SubTasks: {len(issue['fields']['subtasks'])}")
 
-'''
+
 with open('fr-tasks.csv', 'w') as file:
     file.write("{},{},{},{},{},{}".format('Documentation Task', 'Document Task Desc', 'Document Task Status',
                                           'Parent Task', 'Parent Task Desc', 'Parent Task Status'))
@@ -44,3 +48,5 @@ with open('fr-tasks.csv', 'w') as file:
                                                   issue['key'], issue['fields']['summary'],
                                                   issue['fields']['status']['name']))
 print(f"Total Tasks {response['total']}")
+'''
+

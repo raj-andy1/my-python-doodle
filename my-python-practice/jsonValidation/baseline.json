@@ -1,0 +1,38 @@
+{
+    "baselines": [
+        {
+            "baseline_name": "ubuntu stig baseline",
+            "source_benchmark_name": "DISA STIG Ubuntu 20.04 LTS v1r7",
+            "date": "2023-09-08",
+            "in_scope_component": "GOLDEN_BASE_AMI",
+            "rules": [
+                {
+                    "control_id": "UBTU-20-010000",
+                    "title": "The Ubuntu operating system must provision temporary user accounts with an expiration time of 72 hours or less",
+                    "severity": "medium",
+                    "description": "If temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be used to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts must be set upon account creation",
+                    "required": true,
+                    "evidence": [
+                        {
+                            "tenable": "scan_result"
+                        }
+                    ],
+                    "long_description": "\"If a temporary account must be created, configure the system\nto terminate the account after a 72-hour time period with the\nfollowing command to set an expiration date on it.  \n \nSubstitute \"system_account_name\" with the account to be created. \n \n$ sudo chage -E $(date -d \"+3 days\" +%F) system_account_name\"\n"
+                },
+                {
+                    "control_id": "UBTU-20-010002",
+                    "title": "The Ubuntu operating system must enable the graphical user logon banner to display the Standard Mandatory DoD Notice and Consent Banner before granting local access to the system via a graphical user logon.",
+                    "severity": "medium",
+                    "description": "If temporary user accounts remain active when no longer needed or for an excessive period, these accounts may be used to gain unauthorized access. To mitigate this risk, automated termination of all temporary accounts must be set upon account creation",
+                    "required": true,
+                    "evidence": [
+                        {
+                            "yahoo": "scan_result"
+                        }
+                    ],
+                    "long_description": "\"Edit the \\\"/etc/gdm3/greeter.dconf-defaults\\\" file. \\n \\nLook for the \\\"banner-message-enable\\\" parameter under the \\\"[org/gnome/login-screen]\\\" section and uncomment it (remove the leading \\\"#\\\" characters): \\n \\nNote: The lines are all near the bottom of the file but not adjacent to each other. \\n \\n[org/gnome/login-screen] \\n \\nbanner-message-enable=true \\n \\nUpdate the GDM with the new configuration: \\n \\n$ sudo dconf update \\n$ sudo systemctl restart gdm3\"\n"
+                }
+            ]
+        }
+    ]
+}

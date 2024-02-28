@@ -3,48 +3,38 @@
 import csv
 import requests
 from requests.auth import HTTPBasicAuth
+from requests import Request, Session
 import json
 import os
 from dotenv import load_dotenv
 import re
 
 
-def gen_payload(summary: str, desc: str, project: str, reporter: str, issuetype: str, ):
+def gen_payload(summary: str, desc: str, project: str, reporter: str, issuetype: str, labels: list = None):
     payload = json.dumps({
-        "update": {},
+        "update": {
+
+        },
         "fields": {
             "summary": summary,
             "project": {
                 "id": project,
             },
-            "description": {
-                "type": "doc",
-                "version": 1,
-                "content": [
-                    {
-                        "type": "paragraph",
-                        "content": [
-                            {
-                                "text": desc,
-                                "type": "text"
-                            }
-                        ]
-                    }
-                ]
-            },
+            "description": desc,
             "reporter": {
                 "id": reporter
             },
             "issuetype": {
                 "id": issuetype
             },
+            "labels": labels,
         }
     }
     )
     return payload
 
 
-def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=None, **kwargs):
+def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=None, debug=False, **kwargs):
     if not headers:
         headers = ({
             "Accept": "application/json",
@@ -53,8 +43,8 @@ def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=No
     if not httpauth:
         load_dotenv(dotenv_path='envvars.env')
         httpauth = HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
-    try:
-        response = requests.request(
+    r = Session()
+    req = Request(
             method=method,
             url=httpurl,
             data=payload,
@@ -62,12 +52,16 @@ def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=No
             auth=httpauth,
             **kwargs
         )
-        print(response.request.url)
-        print(response.request.headers)
-        print(response.request.body)
-        print(response.status_code)
+    try:
+        response = r.send(req.prepare())
+        if debug:
+            print(response.request.url)
+            print(response.request.headers)
+            print(response.request.body)
+            print(response.status_code)
         if re.match(r'20[0-4]', str(response.status_code)):
-            return json.loads(response.text) if response.text else True
+            return json.dumps(json.loads(response.text), sort_keys=True, indent=4,
+                              separators=(",", ": ")) if response.text else True
         else:
             print(f'Received code {response.status_code}')
             if response.text:
@@ -83,13 +77,14 @@ def http_request(httpurl, httpauth=None, method='POST', headers=None, payload=No
 def test_gen_payload(fileName):
     with open(fileName, 'r', encoding='utf-8') as csvfile:
         lines = csv.reader(csvfile)
+        headers = next(lines)
         for line in lines:
-            return (gen_payload(
-                summary=line[1] + ' ' + line[2],
+            print(gen_payload(
+                summary=(line[0] + ' ' + line[1]).upper(),
                 desc=line[2],
-                project='32582',
+                project='32731',
                 reporter='5beb6f363b5b4b116a9ef4ff',
-                issuetype='30841',
+                issuetype='31127',
             ))
 
 
@@ -103,34 +98,28 @@ def test_create_issue(url, filename):
 
 def main():
     """
-    print(test_gen_payload(
-        '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira/Controls Regrouping - Sheet4.csv'))
+    print(test_gen_payload('Sheet 2-Table 1.csv'))
+
     print(test_create_issue("https://hello.atlassian.net/rest/api/3/issue",
                             '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira'
                             '/Controls Regrouping - Sheet4.csv'))
     """
-    filename = '/Users/arajagopalan/PycharmProjects/my-python-doodle/manipulateJira/Controls Regrouping - Sheet2.csv'
-    load_dotenv()
-    with open(filename, 'r', encoding='utf-8') as csvfile:
+    with open('Sheet 2-Table 1.csv', 'r', encoding='utf-8') as csvfile:
         lines = csv.reader(csvfile)
+        headers = next(lines)
         for line in lines:
-            """
-            url = 'https://hello.atlassian.net/rest/api/2/issue'
             # creating a Jira issue
-            result = http_request(httpurl=url,
-                                  auth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY')),
+            result = http_request(httpurl='https://hello.atlassian.net/rest/api/2/issue',
                                   payload=gen_payload(
-                                      summary=line[1] + ' ' + line[2],
-                                      desc=line[2],
-                                      project='32582',
+                                      summary=(line[0] + ' ' + line[1]).upper(),
+                                      desc='New FedRAMP Rev-5 control',
+                                      project='32731',
                                       reporter='5beb6f363b5b4b116a9ef4ff',
-                                      issuetype='30841',
-                                      headers = {
-                                        "Accept": "application/json",
-                                        "Content-Type": "application/json"
-                                    }
-                                  ))
-            print(line[1] + ',' + result['key'])
+                                      issuetype='31127',
+                                      labels=['FedRAMP-Moderate', 'rev5']
+                                  ), debug=True)
+            
+            print(line[0] + ',' + result['key'])
             """
             # adding a label/updating a field(add epic) in an existing Jira Issue
             result = http_request(httpurl='https://hello.atlassian.net/rest/api/2/issue/' + line[3],
@@ -165,6 +154,7 @@ def main():
                                   httpauth=HTTPBasicAuth(os.getenv('EMAIL'), os.getenv('API_KEY'))
                                   )
             print(result)
+"""
 
 
 if __name__ == '__main__':
