@@ -44,12 +44,11 @@ class GetInst:
         self.csv_in_file = csv_in_file
         pass
 
-    @staticmethod
-    def filterresults(csv_in_file, plugin_id, csv_out_file):
+    def filterresults(self, plugin_id, csv_out_file):
         """
         filter the results based on the plugin id
         """
-        df = pd.read_csv(csv_in_file, low_memory=False)
+        df = pd.read_csv(self.csv_in_file, low_memory=False)
         filtered_df = df[df['Plugin ID'] == plugin_id]
         filtered_df.to_csv(csv_out_file, index=False)
         # print(df.columns.values.tolist())
@@ -66,17 +65,12 @@ class GetInst:
 
     def getresults(self, plugin_id, results_out_csvfile, host_ids=None, exclude_controls=None):
         df = pd.read_csv(self.csv_in_file, low_memory=False, usecols=['Host', 'Description', 'Plugin ID'])
-        filtered_result = df[df['Plugin ID'] == plugin_id].reset_index(drop=True)
         pattern = r'(\d+\.\d+) (.*?): \[([A-Z]+)\]'
-        # Extract the pattern from the 'Solution' column
+        filtered_result = df[df['Plugin ID'].isin([plugin_id])].reset_index(drop=True)
         filtered_result[['RuleId', 'Desc', 'Result']] = filtered_result['Description'].str.extract(pattern)
-        if host_ids:
-            filtered_result = df[df['Host'].isin(host_ids)].reset_index(drop=True)
-        else:
-            pass
+        filtered_result = filtered_result[filtered_result['Host'].isin(host_ids)].reset_index(drop=True)
         final_result = filtered_result.drop(columns=['Description', 'Plugin ID'])
-        if exclude_controls:
-            final_result = final_result[~final_result['RuleId'].isin(exclude_controls)]
+        final_result = final_result[~final_result['RuleId'].isin(exclude_controls)]
         final_result_failed = final_result[final_result['Result'].isin(['FAILED'])]
         final_result_failed.to_csv(results_out_csvfile, index=False)
         return True
@@ -85,26 +79,14 @@ class GetInst:
 def main():
     inst_docker = GetInst(csv_in_file='/Users/arajagopalan/Downloads/Baseline_Agent_Scan_-_Docker (3).csv')
     inst_ubuntu = GetInst(csv_in_file='/Users/arajagopalan/Downloads/Baseline_Agent_Scan_-_Ubuntu_20 (4).csv')
-    csv_out_file = 'filteredCSV_1.csv'
-    '''
-    inst.filterresults(csv_in_file,
-                       21157,
-                       csv_out_file)
-    
-    inst.getresults(csv_in_file,
-                    21157,
-                    host_ids=['i-01204664c748902bb',
-                              'i-0807f3542d367bc85'],
-                    results_out_csvfile='results_4.csv',
-                    exclude_controls=['2.1', '2.2', '2.7', '2.9', '2.12', '2.15', '3.9', '3.10',
-                                      '3.11', '3.12', '3.13', '4.11', '5.2', '5.3', '5.11', '5.12',
-                                      '5.26', '5.29', '5.31', '7.1', '7.2', '7.3', '7.5', '7.6',
-                                      '7.7', '7.8', '7.9', '7.10'])
-    
-    result = inst.checkhostid('filteredCSV.csv', inst_ids_cloudsec_fixtures)
-    print(result)
-    print(len(result))
-    '''
+    inst_docker.getresults(21157,
+                           host_ids=['i-01204664c748902bb',
+                                     'i-0807f3542d367bc85'],
+                           results_out_csvfile='results_docker.csv',
+                           exclude_controls=['2.1', '2.2', '2.7', '2.9', '2.12', '2.15', '3.9', '3.10',
+                                             '3.11', '3.12', '3.13', '4.11', '5.2', '5.3', '5.11', '5.12',
+                                             '5.26', '5.29', '5.31', '7.1', '7.2', '7.3', '7.5', '7.6',
+                                             '7.7', '7.8', '7.9', '7.10'])
     inst_ubuntu.getresults(21157,
                            'results_ubuntu.csv')
 
