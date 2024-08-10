@@ -7,7 +7,7 @@ import pandas as pd
 df = pd.read_csv('Compliance_Scan_-_Docker.csv')
 
 
-df = pd.read_csv('/Users/arajagopalan/Downloads/Baseline_Agent_Scan_-_Docker.csv')
+df = pd.read_csv('/Users/arajagopalan/Downloads/Baseline_Agent_Scan_-_Ubuntu_20 (2).csv')
 filtered_df = df[df['Plugin ID'] == 21157]
 filtered_df.to_csv('Compliance_Scan_-_Docker.csv', index=False)
 rules_list = []

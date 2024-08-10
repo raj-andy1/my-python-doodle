@@ -68,9 +68,12 @@ class GetInst:
         pattern = r'(\d+\.\d+) (.*?): \[([A-Z]+)\]'
         filtered_result = df[df['Plugin ID'].isin([plugin_id])].reset_index(drop=True)
         filtered_result[['RuleId', 'Desc', 'Result']] = filtered_result['Description'].str.extract(pattern)
-        filtered_result = filtered_result[filtered_result['Host'].isin(host_ids)].reset_index(drop=True)
+        # filtered_result = filtered_result[filtered_result['Host'].isin(host_ids)].reset_index(drop=True)
         final_result = filtered_result.drop(columns=['Description', 'Plugin ID'])
-        final_result = final_result[~final_result['RuleId'].isin(exclude_controls)]
+        if exclude_controls:
+            final_result = final_result[~final_result['RuleId'].isin(exclude_controls)]
+        if host_ids:
+            final_result = final_result[final_result['Host'].isin(host_ids)]
         final_result_failed = final_result[final_result['Result'].isin(['FAILED'])]
         final_result_failed.to_csv(results_out_csvfile, index=False)
         return True
