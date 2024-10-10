@@ -1,0 +1,179 @@
+{
+  "data": {
+    "id": "ws-97L6dEa8yAWviiYr",
+    "type": "workspaces",
+    "attributes": {
+      "allow-destroy-plan": false,
+      "auto-apply": true,
+      "auto-apply-run-trigger": false,
+      "auto-destroy-activity-duration": null,
+      "auto-destroy-at": null,
+      "auto-destroy-status": null,
+      "inherits-project-auto-destroy": false,
+      "created-at": "2024-06-11T22:57:30.624Z",
+      "environment": "default",
+      "locked": false,
+      "name": "dns-loominternaltest2-com",
+      "queue-all-runs": false,
+      "speculative-enabled": true,
+      "structured-run-output-enabled": true,
+      "terraform-version": "latest",
+      "working-directory": "loominternaltest2.com",
+      "global-remote-state": false,
+      "updated-at": "2024-10-04T16:11:04.803Z",
+      "resource-count": 3,
+      "apply-duration-average": 154000,
+      "plan-duration-average": 17000,
+      "policy-check-failures": 0,
+      "run-failures": 0,
+      "workspace-kpis-runs-count": 1,
+      "latest-change-at": "2024-06-11T23:12:30.673Z",
+      "operations": true,
+      "execution-mode": "remote",
+      "vcs-repo": {
+        "branch": "main",
+        "ingress-submodules": false,
+        "tags-regex": null,
+        "identifier": "loomhq/dns",
+        "display-identifier": "loomhq/dns",
+        "oauth-token-id": "ot-PMPjC3ismG6c5q5E",
+        "webhook-url": "https://app.terraform.io/webhooks/vcs/b0a8336f-c03b-470e-ad84-cab302b85e1c",
+        "repository-http-url": "https://github.com/loomhq/dns",
+        "service-provider": "github"
+      },
+      "vcs-repo-identifier": "loomhq/dns",
+      "permissions": {
+        "can-update": true,
+        "can-destroy": true,
+        "can-queue-run": true,
+        "can-read-run": true,
+        "can-read-variable": true,
+        "can-update-variable": true,
+        "can-read-state-versions": true,
+        "can-read-state-outputs": true,
+        "can-create-state-versions": true,
+        "can-queue-apply": true,
+        "can-lock": true,
+        "can-unlock": true,
+        "can-force-unlock": true,
+        "can-read-settings": true,
+        "can-manage-tags": true,
+        "can-manage-run-tasks": true,
+        "can-force-delete": true,
+        "can-manage-assessments": true,
+        "can-manage-ephemeral-workspaces": false,
+        "can-read-assessment-results": true,
+        "can-queue-destroy": true
+      },
+      "actions": {
+        "is-destroyable": false
+      },
+      "description": "",
+      "file-triggers-enabled": true,
+      "trigger-prefixes": [],
+      "trigger-patterns": [],
+      "assessments-enabled": false,
+      "last-assessment-result-at": null,
+      "locked-reason": "",
+      "oauth-client-name": "github",
+      "source": "terraform",
+      "source-name": null,
+      "source-url": null,
+      "tag-names": [],
+      "setting-overwrites": {
+        "execution-mode": false,
+        "agent-pool": false
+      }
+    },
+    "relationships": {
+      "organization": {
+        "data": {
+          "id": "loomhq",
+          "type": "organizations"
+        }
+      },
+      "current-run": {
+        "data": {
+          "id": "run-mbkz8dF2eo6jJNkM",
+          "type": "runs"
+        },
+        "links": {
+          "related": "/api/v2/runs/run-mbkz8dF2eo6jJNkM"
+        }
+      },
+      "latest-run": {
+        "data": {
+          "id": "run-mbkz8dF2eo6jJNkM",
+          "type": "runs"
+        },
+        "links": {
+          "related": "/api/v2/runs/run-mbkz8dF2eo6jJNkM"
+        }
+      },
+      "outputs": {
+        "data": [],
+        "links": {
+          "related": "/api/v2/workspaces/ws-97L6dEa8yAWviiYr/current-state-version-outputs"
+        }
+      },
+      "remote-state-consumers": {
+        "links": {
+          "related": "/api/v2/workspaces/ws-97L6dEa8yAWviiYr/relationships/remote-state-consumers"
+        }
+      },
+      "current-state-version": {
+        "data": {
+          "id": "sv-cuxH4LikLuBhz23p",
+          "type": "state-versions"
+        },
+        "links": {
+          "related": "/api/v2/workspaces/ws-97L6dEa8yAWviiYr/current-state-version"
+        }
+      },
+      "current-configuration-version": {
+        "data": {
+          "id": "cv-cBZ7usQeMT6DsvLg",
+          "type": "configuration-versions"
+        },
+        "links": {
+          "related": "/api/v2/configuration-versions/cv-cBZ7usQeMT6DsvLg"
+        }
+      },
+      "agent-pool": {
+        "data": null
+      },
+      "readme": {
+        "data": {
+          "id": "2571250",
+          "type": "workspace-readme"
+        }
+      },
+      "project": {
+        "data": {
+          "id": "prj-J5nNvo3z2r9AcxUn",
+          "type": "projects"
+        }
+      },
+      "current-assessment-result": {
+        "data": null
+      },
+      "vars": {
+        "data": [
+          {
+            "id": "var-DxKPrh23HHneTdtN",
+            "type": "vars"
+          },
+          {
+            "id": "var-sTt6J3wgx2SxNcbn",
+            "type": "vars"
+          }
+        ]
+      }
+    },
+    "links": {
+      "self": "/api/v2/organizations/loomhq/workspaces/dns-loominternaltest2-com",
+      "self-html": "/app/loomhq/workspaces/dns-loominternaltest2-com"
+    }
+  }
+}
+

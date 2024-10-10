@@ -24,6 +24,23 @@ def cfDecodeEmail(encodedString):
 flag = True
 debug = False
 all_ins = []
+mountain_checkout = []
+mountain_checkout_ins = ["Claudio Basile",
+                         "Byron Bly",
+                         "Anawat Chankhunthod",
+                         "Jonathan Chung",
+                         "Andrew Dilworth",
+                         "Lisa Dyball",
+                         "Yaron Ekshtein",
+                         "Mark Erwin",
+                         "Jeff Katz",
+                         "Libor Kovarcik",
+                         "Andy McMahon",
+                         "Martin Michaud",
+                         "Steve Philipson",
+                         "Greg Savidge",
+                         "Ed Stephan",
+                         "Rimas Viselga"]
 
 all_instructors = getSoup('https://www.advantage-aviation.com/instructor')
 
@@ -44,10 +61,11 @@ for instructor_data in instructors:
     inst_detail_d['instructor_phone'] = instructor_contact.find_all('a')[0]['href'].split(':')[1]
     inst_detail_d['email'] = cfDecodeEmail(instructor_contact.find_all('a')[2]['href'].split('#')[1])
     instructor_url = instructor_contact.find_all('a')[1]['href']
-    if flag:
-        print(f'getting instructor rate for {inst_detail_d["instructor_name"]}')
-        instructor = getSoup(instructor_url)
-        inst_detail_d['instructor_rate'] = instructor.find_all('p', class_='rate')[0].text
+    if debug: print(f'getting instructor rate for {inst_detail_d["instructor_name"]}')
+    instructor = getSoup(instructor_url)
+    inst_detail_d['instructor_rate'] = instructor.find_all('p', class_='rate')[0].text
+    if instructor_detail.find('h3').text in mountain_checkout_ins:
+        mountain_checkout.append(inst_detail_d)
     all_ins.append(inst_detail_d)
     if debug:
         print(inst_detail_d)
@@ -56,5 +74,5 @@ for instructor_data in instructors:
         print(instructor_url_from_ww)
         print(instructor_contact, end="\n" * 2)
         print(all_ins)
-for ins in all_ins:
+for ins in mountain_checkout:
     print(ins, sep='\n')

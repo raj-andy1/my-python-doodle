@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = 'https://www.advantage-aviation.com/instructor/yaron-ekshtein/'
+URL = 'https://advantage-aviation.com/instructor/andrew-dilworth/'
 
 page = requests.get(URL)
-# print(page.text)
+print(page.text)
 
 soup = BeautifulSoup(page.content, 'html.parser')
 instructor = soup.find(id='main')
@@ -12,7 +12,7 @@ instructor = soup.find(id='main')
 #print(instructor.prettify())
 
 items = instructor.find_all('p', class_='rate')[0].text
-print(items)
+#print(items)
 
 URL = 'https://www.advantage-aviation.com/instructor'
 

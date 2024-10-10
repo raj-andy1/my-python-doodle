@@ -3,7 +3,7 @@ import csv
 
 #tree = ET.parse('ssg-ubuntu2004-ds-1.2.xml')
 #tree = ET.parse('report.xml')
-tree = ET.parse('/Users/arajagopalan/Downloads/report1.xml')
+tree = ET.parse('hostfsresults.xml')
 root = tree.getroot()
 
 # Some XML attributes were omitted for clarity.
@@ -35,7 +35,7 @@ for rule in root.findall('.//{*}Rule'):
     severity = rule.attrib['severity']
     references = rule.findall('.//{*}reference')
     for reference in references:
-        # print(reference.text)
+        print(reference.text)
         # Filter for STIG.
         if not reference.attrib['href'].startswith(
                 'https://public.cyber.mil/stigs/srg-stig-tools'):
